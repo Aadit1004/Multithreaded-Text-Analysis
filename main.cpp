@@ -57,8 +57,9 @@ void addWordsToMap() {
             if (num >= charCount) break;
         }
         temp = userInput.substr(i, num - i);
-        for (char& i : temp) {
-            temp[i] = tolower(temp[i]);
+        for (int i = 0; i < temp.length(); i++) {
+            char ch = tolower((char) temp[i]);
+            temp[i] = ch;
         }
         if (words.find(temp) == words.end()) {
             pair<string, int> tempWord = make_pair(temp, 1);
@@ -67,7 +68,7 @@ void addWordsToMap() {
             words.find(temp)->second++;      
         }
         i = num + 1;
-        
+        // TO DO
     }
     doneAdding = true;
     cv.notify_all();
