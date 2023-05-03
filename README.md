@@ -1,2 +1,2 @@
 # Multithreading-Text-Analysis
-A quick project to practice multithreading with multiple functions when reading text to get word count, average word length, longest word, shorted word and most common words.
+A mini project to practice multithreading with multiple functions when reading text to get word count, average word length, longest word, shorted word, most common word, and how many unique words there are. This should prove useful for large files of text where it would be hard to get such information. In this project, I used a map where I stored the words and their number of occurences where it would make it easier to compute the functions stated above.
