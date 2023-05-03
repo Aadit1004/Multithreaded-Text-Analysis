@@ -5,6 +5,7 @@
 #include <condition_variable>
 #include <map>
 #include <utility>
+#include<bits/stdc++.h>
 
 using namespace std;
 
@@ -24,42 +25,33 @@ map<string, int> words;
 
 void addWordsToMap() {
     unique_lock lock(mx);
-    // Do Function
-    int i = 0;
-    while (i < charCount) {
-        string temp;
-        int num = i;
-        while (true) {
-            bool temp = false;
-            switch((char) userInput[num]) {
-                case ' ':
-                    goto CONT;
-                case '.':
-                    goto CONT;
-                case '?':
-                    goto CONT;
-                case ',':
-                    goto CONT;
-                case '!':
-                    goto CONT;
-                case ':':
-                    goto CONT;
-                case ';':
-                    goto CONT;
-                default:
-                    num++; // increase length of word by 1
-                    break;
-                CONT:
-                    temp = true;
-                    break;
-            }
-            if (temp) break;
-            if (num >= charCount) break;
-        }
-        temp = userInput.substr(i, num - i);
+    string temp;
+    stringstream iss(userInput);
+    while (iss >> temp) {
         for (int i = 0; i < temp.length(); i++) {
             char ch = tolower((char) temp[i]);
             temp[i] = ch;
+            if (i == temp.length() - 1) {
+                switch ((char) temp[i]) {
+                    case ',':
+                        goto CONT;
+                    case '.':
+                        goto CONT;
+                    case '?':
+                        goto CONT;
+                    case '!':
+                        goto CONT;
+                    case ':':
+                        goto CONT;
+                    case ';':
+                        goto CONT;
+                    default:
+                        break;
+                    CONT:
+                        temp = temp.substr(0, temp.length() - 1);
+                        break;
+                }
+            }
         }
         if (words.find(temp) == words.end()) {
             pair<string, int> tempWord = make_pair(temp, 1);
@@ -67,8 +59,6 @@ void addWordsToMap() {
         } else {
             words.find(temp)->second++;      
         }
-        i = num + 1;
-        // TO DO
     }
     doneAdding = true;
     cv.notify_all();
@@ -109,7 +99,7 @@ void longestWordFn() {
     }
     unsigned int temp = 0;
     for (const auto& kv : words) {
-        if (kv.first.length() > 0) {
+        if (kv.first.length() > temp) {
             temp = kv.first.length();
             longestWord = kv.first;
         }
