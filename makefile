@@ -1,13 +1,9 @@
-CFLAGS += -std=gnu11 -g
-EXES = main
-OBJS = main.o
 
-all: $(EXES)
+output: main.o
+	g++ main.o -o output
 
-main:   main.o
+main.o: main.cpp
+	g++ -c main.cpp
 
 clean:
-	rm -f $(EXES) $(OBJS)
-	rm -rf $(LIBS)
-tidy:
-	rm -f $(OBJS)
+	rm *.o output

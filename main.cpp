@@ -1,78 +1,83 @@
 #include <iostream>
-#include <map>
-#include <thread>
 #include <string>
+#include <thread>
 #include <mutex>
 #include <condition_variable>
+#include <map>
 
 using namespace std;
 
 int wordCount = 0;
 string userInput;
+int charCount;
 string commonWord;
 string longestWord;
 string shortestWord;
 int averageWordLength = 0;
 bool doneAdding = false;
-condition_variable doneCounting;
-mutex counting_mx;
+condition_variable cv;
+mutex mx;
 
 void addWordsToMap() {
-    counting_mx.lock();
+    unique_lock lock(mx);
     // Do Function
+
     doneAdding = true;
-    doneCounting.notify_all();
-    counting_mx.unlock();
+    cv.notify_all();
+    lock.unlock();
 }
 
 void wordCountFn() {
-    counting_mx.lock();
+    unique_lock<mutex> lock(mx);
     while (!doneAdding) {
-        wait(doneCounting);
+        cv.wait(lock);
     }
     // do Function
-    counting_mx.unlock();
+    lock.unlock();
 }
 
 void averageWordLengthFn() {
-    counting_mx.lock();
+    unique_lock<mutex> lock(mx);
     while (!doneAdding) {
-        wait(doneCounting);
+        cv.wait(lock);
     }
     // do Function
-    counting_mx.unlock();
+    lock.unlock();
 }
 
 void longestWordFn() {
-    counting_mx.lock();
+    unique_lock<mutex> lock(mx);
     while (!doneAdding) {
-        wait(doneCounting);
+        cv.wait(lock);
     }
     // do Function
-    counting_mx.unlock();
+    lock.unlock();
 }
 
 void shortestWordFn() {
-    counting_mx.lock();
+    unique_lock<mutex> lock(mx);
     while (!doneAdding) {
-        wait(doneCounting);
+        cv.wait(lock);
     }
     // do Function
-    counting_mx.unlock();
+    lock.unlock();
 }
 
 void commonWordFn() {
-    counting_mx.lock();
+    unique_lock<mutex> lock(mx);
     while (!doneAdding) {
-        wait(doneCounting);
+        cv.wait(lock);
     }
     // do Function
-    counting_mx.unlock();
+    lock.unlock();
 }
 
 int main () {
     cout << "Please enter or paste text: ";
-    cin >> userInput >> endl;
+    getline(cin, userInput);
+    charCount = userInput.length();
+    cout << "length is: " << charCount << endl;
+    cout << userInput << endl;
     thread addToMap(addWordsToMap);
     thread doWorkCount(wordCountFn);
     thread doAverageWord(averageWordLengthFn);
