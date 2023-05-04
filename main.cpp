@@ -5,7 +5,8 @@
 #include <condition_variable>
 #include <map>
 #include <utility>
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
+#include <fstream>
 
 using namespace std;
 
@@ -17,7 +18,6 @@ string longestWord = "";
 string shortestWord = "";
 double averageWordLength = 0;
 unsigned int uniqueWords = 0;
-
 bool doneAdding = false;
 condition_variable cv;
 mutex mx;
@@ -31,6 +31,21 @@ void addWordsToMap() {
         for (int i = 0; i < temp.length(); i++) {
             char ch = tolower((char) temp[i]);
             temp[i] = ch;
+            if (i == 0) {
+                switch ((char) temp[i]) {
+                    case '"':
+                        goto CONT1;
+                    case '(':
+                        goto CONT1;
+                    case '$':
+                        goto CONT1;
+                    default:
+                        break;
+                    CONT1:
+                        temp = temp.substr(1);
+                        break;
+                }
+            }
             if (i == temp.length() - 1) {
                 switch ((char) temp[i]) {
                     case ',':
@@ -44,6 +59,12 @@ void addWordsToMap() {
                     case ':':
                         goto CONT;
                     case ';':
+                        goto CONT;
+                    case ')':
+                        goto CONT;
+                    case '"':
+                        goto CONT;
+                    case '$':
                         goto CONT;
                     default:
                         break;
@@ -147,8 +168,13 @@ void uniqueWordsFn() {
 }
 
 int main () {
-    cout << "Please enter or paste text: ";
-    getline(cin, userInput);
+    string tempText;
+    ifstream textFile("file.txt");
+    while (getline (textFile, tempText)) {
+        userInput += tempText;
+    }
+    // cout << "Please enter or paste text: ";
+    // getline(cin, userInput);
     charCount = userInput.length();
     thread addToMap(addWordsToMap);
     thread doWorkCount(wordCountFn);
@@ -172,5 +198,6 @@ int main () {
     cout << "The Longest word is: " << longestWord << endl;
     cout << "The shortest word is: " << shortestWord << endl;
     cout << "The most common word is: " << commonWord << endl;
+    textFile.close();
     return 0;
 }
